@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView,DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin,  UserPassesTestMixin
@@ -9,6 +9,9 @@ from django.http import HttpResponseRedirect
 
 from .models import Post, Comment, Category
 from .forms import PostForm,CommentForm
+import logging
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def logout_view(request):
@@ -26,30 +29,38 @@ def post_category(request, category):
     return render(request, "posts/category.html", context)
 
 def post_detail(request, pk):
-    post = Post.objects.get(pk=pk)
+    post = get_object_or_404(Post, pk=pk)
+    comments = Comment.objects.filter(post=post)
     form = CommentForm()
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
-            comment = Comment(
-                author=form.cleaned_data["author"],
-                body=form.cleaned_data["body"],
-                post=post,
-            )
+            comment = form.save(commit=False)
+            comment.author = request.user  
+            comment.post = post  
             comment.save()
-            return HttpResponseRedirect(request.path_info)
+            return HttpResponseRedirect(request.path_info)  
+
+    return render(request, 'posts/post_detail.html', {
+        'post': post,
+        'comments': comments,
+        'form': form,
+    })
+
+def edit_comment(request, post_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, post_id=post_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=post_id)  
+    else:
+        form = CommentForm(instance=comment)
+
+    return render(request, 'comments/edit_comment.html', {'form': form})
 
 
-
-
-
-    comments = Comment.objects.filter(post=post)
-    context = {
-        "post": post,
-        "comments": comments,
-        "form": CommentForm(),
-        }
-    return render(request, "posts/detail.html", context)
 
 
 
@@ -102,16 +113,36 @@ class AddCommentView(CreateView):
     def get_success_url(self):
         return reverse_lazy('post_detail', kwargs={'pk': self.kwargs['pk']})
     
-class DeleteCommentView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+# class DeleteCommentView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+#     model = Comment
+#     template_name = 'comments/confirm_delete.html'
+
+#     success_url = reverse_lazy('detail')  
+
+#     def form_valid(self, form):
+#         logger.debug("Form valid, processing deletion")
+#         return super().form_valid(form)
+
+#     def form_invalid(self, form):
+#         logger.error("Form invalid: %s", form.errors)
+#         return super().form_invalid(form)
+
+#     def test_func(self):
+#         comment = self.get_object()
+#         return self.request.user == comment.author
+
+#     def get_success_url(self):
+#         comment = self.get_object()
+#         return reverse_lazy('post_detail', kwargs={'pk': comment.post.pk})
+
+class DeleteCommentView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'comments/confirm_delete.html'
 
-    success_url = reverse_lazy('detail')  
-
-    def test_func(self):
-        comment = self.get_object()
-        return self.request.user == comment.author
-
     def get_success_url(self):
-        comment = self.get_object()
-        return reverse_lazy('post_detail', kwargs={'pk': comment.post.pk})
+       
+        return reverse_lazy('post_detail', kwargs={'pk': self.object.post.pk})
+
+    def delete(self, request, *args, **kwargs):
+    
+        return super().delete(request, *args, **kwargs)
