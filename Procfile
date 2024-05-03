@@ -1,0 +1,1 @@
+web: gunicorn lyoko6.wsgi
