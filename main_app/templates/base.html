@@ -16,33 +16,38 @@
 </head>
 
 <body class="#ffa726 orange lighten-1">
-<header class="navbar-fixed">
-  <nav class="#0097a7 cyan darken-2">
-    <div class="nav-wrapper">
-      <a href="{% url 'home' %}" class="brand-logo">Logo</a>
-      <ul class="right hide-on-med-and-down">
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'add_post' %}">Add Post</a></li>
-        <li><a href="{% url 'add_category' %}">Add Category</a></li>
+  <header class="navbar-fixed">
+    <nav class="transparent #0097a7 cyan darken-2">
+      <div class="nav-wrapper">
 
-        <li class="active"><a href="{% url 'logout' %}">Logout</a></li>
-        {% else %}
-       
-        <li class="active"><a href="{% url 'login' %}">Login</a></li>
-        {% endif %}
-      </ul>
-    </div>
-  </nav>
-</header>
+        <a href="{% url 'home' %}" class="brand-logo">Home
+      
+        </a>
 
-<main class="container">
-  {% block content %}
-  {% endblock %}
-</main>
-<br />
-<footer class="page-footer #0097a7 cyan darken-2">
-  <div class="right">All Rights Reserved, &copy; 2024 PivotLabs &nbsp;</div>
-</footer>
+        <ul class="right hide-on-med-and-down">
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'add_post' %}">Add Post</a></li>
+          <li><a href="{% url 'add_category' %}">Add Category</a></li>
+
+          <li class="active"><a href="{% url 'logout' %}">Logout</a></li>
+          {% else %}
+
+          <li class="active"><a href="{% url 'login' %}">Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+
+  <main class="container">
+    {% block content %}
+    {% endblock %}
+  </main>
+  <br />
+  <footer class="page-footer #0097a7 cyan darken-2">
+    <div class="right">All Rights Reserved, &copy; 2024 PivotLabs &nbsp;</div>
+  </footer>
 </body>
 
 </html>
