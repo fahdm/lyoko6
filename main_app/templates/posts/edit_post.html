@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Edit Post!{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<div class="row">
+    <div class="col s12 m6">
+        <div class="card #fafafa grey lighten-5">
+            <div class="card-content black-text">
+                <span class="card-title">Update Post</span>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="waves-effect waves-light btn #0097a7 cyan darken-2">Update</button>
+
+                </form>
+            </div>
+            <div class="card-action">
+                <a href="#">This is a link</a>
+                <a href="#">This is a link</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+You are not authorized to view this page-footer
+
+{% endif %}
+
+{% endblock %}
