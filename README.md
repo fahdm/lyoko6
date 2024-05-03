@@ -13,5 +13,5 @@ Lyoko is a dynamic web blog designed for technology professionals looking to net
 - **Heroku**: A cloud platform as a service supporting several programming languages, used for deploying and managing modern apps.
 
 ## Getting Started
--[Click to View Project Planning](https://trello.com/b/q2J8AEHu/lyoko)
--[Click to launch Lyoko](https://lyoko-9ab6d69f2a0f.herokuapp.com)
+- **[Click to View Project Planning](https://trello.com/b/q2J8AEHu/lyoko)
+- **[Click to launch Lyoko](https://lyoko-9ab6d69f2a0f.herokuapp.com)
