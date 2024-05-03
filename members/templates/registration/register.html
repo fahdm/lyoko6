@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col s12 m6">
+      <div class="card #f5f5f5 grey lighten-4">
+        <div class="card-content black-text">
+
+            <h1>Register</h1>
+
+            <form method="POST">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <input type="hidden" name="next" value="{{ next }}">
+              <button type="submit" class="btn">Register</button>
+            </form>
+     
+
+
+        </div>
+        <div class="card-action">
+          <a href="#">This is a link</a>
+          <a href="#">This is a link</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
